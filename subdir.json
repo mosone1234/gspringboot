@@ -1,0 +1,9 @@
+[
+	{ "name": { 
+		"dir": "service", "name": "mapper"
+	} },
+	{ "name": { 
+		"dir": "web", "name": "rest"
+	} }
+]
+

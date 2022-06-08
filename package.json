@@ -1,0 +1,14 @@
+{
+  "name": "gpringboot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "code": "node tree.js && node gclass.js && node code.js",
+    "tree": "node tree.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
