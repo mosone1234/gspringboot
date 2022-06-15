@@ -4,7 +4,7 @@
       "dir": ["domain", "repository", "dto", "service"],
       "subdir": ["service/mapper", "web/rest"],
       "values": [
-	    "String Id saleProducId",
+	    "String Id saleProductId",
       	"Sale Column saleId",
       	"Product ManyToOne productId",
       	"Integer Column cuantity"

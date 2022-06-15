@@ -1,14 +1,21 @@
 {
-  "name": "gpringboot",
+  "name": "gspringboot",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "generate stack, spring boot",
+  "main": "./index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "code": "node tree.js && node gclass.js && node code.js",
     "tree": "node tree.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "bin": {
+    "dosomethingawesome": "./spring-global.js"
+  },
+  "preferGlobal": true,
+  "author": "Ayar Pérez",
+  "license": "MIT",
+  "dependencies": {
+    "xml2json": "^0.12.0"
+  }
 }
