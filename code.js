@@ -200,13 +200,22 @@ function domainData(data, className) {
     let typeData= x[0]
     let id = x[1]
     let value = x[2]
+    // if (array.includes(typeData)) {
+    //   str = str + '\t@'+ id + '\n' +
+    //               (id.toLowerCase() === 'manytoone' || id.toLowerCase() === 'onetoone' ? '\t@JsonIgnoreProperties("'+ className.toLowerCase() +'")\n' : "") +
+    //               '\tprivate ' + typeData + ' '+value+ ';\n'
+    // } else {
+    //   str = str + '\t@'+ id + '\n' +
+    //               (id.toLowerCase() === 'manytoone' || id.toLowerCase() === 'onetoone' ? '\t@JsonIgnoreProperties("'+ className.toLowerCase() +'")\n' : "") +
+    //               '\tprivate ' + typeData + ' '+value.replace("Id", "")+ ';\n'
+    // }
     if (array.includes(typeData)) {
       str = str + '\t@'+ id + '\n' +
-                  (id.toLowerCase() === 'manytoone' || id.toLowerCase() === 'onetoone' ? '\t@JsonIgnoreProperties("'+ className.toLowerCase() +'")\n' : "") +
+                  (id.toLowerCase() === 'manytoone' || id.toLowerCase() === 'onetoone' ? '\t@JoinColumn(name="'+ value.replace("Id", "_id").toLowerCase() +'", referencedColumnName = "'+value+'")\n' : "") +
                   '\tprivate ' + typeData + ' '+value+ ';\n'
     } else {
       str = str + '\t@'+ id + '\n' +
-                  (id.toLowerCase() === 'manytoone' || id.toLowerCase() === 'onetoone' ? '\t@JsonIgnoreProperties("'+ className.toLowerCase() +'")\n' : "") +
+                  (id.toLowerCase() === 'manytoone' || id.toLowerCase() === 'onetoone' ? '\t@JoinColumn(name="'+ value.replace("Id", "_id").toLowerCase() +'", referencedColumnName = "'+value+'")\n' : "") +
                   '\tprivate ' + typeData + ' '+value.replace("Id", "")+ ';\n'
     }
     return str

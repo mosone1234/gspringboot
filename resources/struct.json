@@ -5,7 +5,7 @@
       "subdir": ["service/mapper", "web/rest"],
       "values": [
 	    "String Id saleProductId",
-      	"Sale Column saleId",
+      	"Sale ManyToOne saleId",
       	"Product ManyToOne productId",
       	"Integer Column cuantity"
       ]
