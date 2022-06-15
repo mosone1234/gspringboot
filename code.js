@@ -8,7 +8,7 @@ function domainClass(data, className) {
     + 'import javax.persistence.*; \n'
     + 'import org.hibernate.annotations.Cache; \n'
     + 'import org.hibernate.annotations.CacheConcurrencyStrategy; \n'
-    + 'import lombok.*; \n'
+    + 'import lombok.*; \n\n'
     + '@EqualsAndHashCode(callSuper = false) \n'
     + '@Entity \n'
     + '@Getter \n'
@@ -16,7 +16,7 @@ function domainClass(data, className) {
     + '@NoArgsConstructor \n'
     + '@Table(name="' + className.toLowerCase() + '") \n'
     + '@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE) \n'
-    + '@Access(AccessType.FIELD) \n\n'
+    + '@Access(AccessType.FIELD) \n'
     + 'public class '+ className +' { \n'
     + `${data}`
     + '} \n'
@@ -30,7 +30,7 @@ function dtoClass(data, className) {
     + '@Entity \n'
     + '@Getter \n'
     + '@Setter \n'
-    + 'public class '+ className +' { \n'
+    + 'public class '+ className +'DTO { \n'
     + `${data}`
     + '} \n'
     return str
@@ -167,14 +167,21 @@ function mapperClass(className, entity, dto) {
 }
 
 function domainData(data, className) {
+  const array = ["String", "Integer", "Date", "Double", "Long", "int", "double", "Instant"]
   let str = ''
   data.map(x => {
     let typeData= x[0]
     let id = x[1]
     let value = x[2]
-    str = str + '\t@'+ `${id}` + '\n\t' +
-          (id.toLowerCase() === 'manytoone' || id.toLowerCase() === 'onetoone' ? '@JsonIgnoreProperties("'+ className.toLowerCase() +'")\n' : '') +
-          '\tprivate' + ` ${typeData}` + ` ${value}` + '\n'
+    if (array.includes(typeData)) {
+      str = str + '\t@'+ id + '\n' +
+                  (id.toLowerCase() === 'manytoone' || id.toLowerCase() === 'onetoone' ? '\t@JsonIgnoreProperties("'+ className.toLowerCase() +'")\n' : "") +
+                  '\tprivate ' + typeData + ' '+value+ ';\n'
+    } else {
+      str = str + '\t@'+ id + '\n' +
+                  (id.toLowerCase() === 'manytoone' || id.toLowerCase() === 'onetoone' ? '\t@JsonIgnoreProperties("'+ className.toLowerCase() +'")\n' : "") +
+                  '\tprivate ' + typeData + ' '+value.replace("Id", "")+ ';\n'
+    }
     return str
   })
   console.log(str)
@@ -182,11 +189,16 @@ function domainData(data, className) {
 }
 
 function dtoData(data, className) {
+  const array = ["String", "Integer", "Date", "Double", "Long", "int", "double", "Instant"]
   let str = ''
   data.map(x => {
     let typeData= x[0]
     let value = x[2]
-    str = str + '\tprivate' + ` ${typeData }` + ` ${value}` + '\n'
+    if (array.includes(typeData)) {
+      str = str + '\tprivate' + ` ${typeData }` + ` ${value}` + ';\n'
+    } else {
+      str = str + '\tprivate' + " String" + ` ${value}` + '; // foreign key\n'
+    }
     return str
   })
   console.log(str)
@@ -264,12 +276,17 @@ function service() {
 }
 
 function mapperCode(arr, className, classOrDto) {
+  const array = ["String", "Integer", "Date", "Double", "Long", "int", "double", "Instant"]
   let strEntity = ''
   arr.map(y => {
     let typeData= y[0]
     let value = y[2]
     console.log(typeData)
-    strEntity = strEntity + '\n\t\t'+className.toLowerCase()+classOrDto+'.set'+value+'('+className.toLowerCase()+classOrDto+'.get'+value+'());'
+    // if (array.includes(value)) {
+      strEntity = strEntity + '\n\t\t'+className.toLowerCase()+(classOrDto !== "DTO" ? "DTO" : "")+'.set'+camelCase(value)+'('+className.toLowerCase()+(classOrDto === "DTO" ? "DTO" : "")+'.get'+camelCase(value)+'());';
+    // } else {
+    //   strEntity = strEntity +
+    // }
   })
   return strEntity;
 }
@@ -278,7 +295,7 @@ function mapper() {
   jsonClass.map(x => {
     console.log("./example/service/mapper/" + x.entity + "Mapper.java")
     var arr = dumbSpaceSplit(Object.assign([], x.values))
-    fs.writeFile("./example/service/mapper/" + x.entity + "Mapper.java", mapperClass(x.entity, mapperCode(arr, x.entity, ''), mapperCode(arr, x.entity, 'DTO')), function(err) {
+    fs.writeFile("./example/service/mapper/" + x.entity + "Mapper.java", mapperClass(x.entity, mapperCode(arr, x.entity, "DTO"), mapperCode(arr, x.entity, "")), function(err) {
         if(err) {
             return console.log(err);
         }
@@ -298,4 +315,8 @@ function rest() {
         console.log("The file was saved!");
     }); 
   })
+}
+
+function camelCase(str) {
+	return str.charAt(0).toUpperCase() + str.slice(1);
 }
