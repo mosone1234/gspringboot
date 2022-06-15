@@ -10,7 +10,7 @@
   },
   "keywords": [],
   "bin": {
-    "dosomethingawesome": "./spring-global.js"
+    "gspring": "./spring-global.js"
   },
   "preferGlobal": true,
   "author": "Ayar Pérez",
